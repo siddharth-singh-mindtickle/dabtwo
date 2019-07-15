@@ -1,0 +1,26 @@
+const Sequelize = require('sequelize');
+const dao = require('./database_access_object');
+const Logger = require(`../../universal_logger`);
+
+class Channel extends Sequelize.Model{}
+
+Channel.init({
+    channel:{
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+    }
+}, {
+    sequelize: dao,
+    modelName: 'channels'
+});
+
+Channel.addHook('beforeCreate', (channel, options) => {
+    Logger.info(`A New Channel detected -> ${channel.channel}`);
+});
+
+Channel.addHook('beforeDestroy', (channel, options)=> {
+    Logger.info(`An Old Channel was Closed -> ${channel.channel}`);
+});
+
+module.exports = Channel;
